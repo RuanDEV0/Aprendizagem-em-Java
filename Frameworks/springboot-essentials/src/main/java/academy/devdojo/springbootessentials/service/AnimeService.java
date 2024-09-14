@@ -31,7 +31,7 @@ public class AnimeService {
         return animeRepository.findByName(name);
     }
 
-    @Transactional
+    @Transactional()
     public Anime save(AnimePostRequestBody animePostRequestBody) {
         return animeRepository.save(AnimeMapper.INSTANCE.toAnime(animePostRequestBody));
     }
