@@ -7,7 +7,7 @@ import javax.annotation.processing.Generated;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-09-14T16:34:18-0400",
+    date = "2024-09-19T11:32:51-0400",
     comments = "version: 1.6.0, compiler: javac, environment: Java 21.0.2 (Oracle Corporation)"
 )
 public class AnimeMapperImpl extends AnimeMapper {
@@ -18,9 +18,11 @@ public class AnimeMapperImpl extends AnimeMapper {
             return null;
         }
 
-        Anime anime = new Anime();
+        Anime.AnimeBuilder anime = Anime.builder();
 
-        return anime;
+        anime.name( animePostRequestBody.getName() );
+
+        return anime.build();
     }
 
     @Override
@@ -29,8 +31,11 @@ public class AnimeMapperImpl extends AnimeMapper {
             return null;
         }
 
-        Anime anime = new Anime();
+        Anime.AnimeBuilder anime = Anime.builder();
 
-        return anime;
+        anime.id( animePutRequestBody.getId() );
+        anime.name( animePutRequestBody.getName() );
+
+        return anime.build();
     }
 }

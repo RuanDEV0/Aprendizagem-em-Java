@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -42,7 +43,7 @@ public class AnimeController {
 
 
     @PostMapping
-    public ResponseEntity<Anime> save(@RequestBody @Valid AnimePostRequestBody animePostRequestBody) {
+    public ResponseEntity<Anime> save(@Valid @RequestBody AnimePostRequestBody animePostRequestBody) {
         return new ResponseEntity<>(animeService.save(animePostRequestBody), HttpStatus.CREATED);
     }
 
