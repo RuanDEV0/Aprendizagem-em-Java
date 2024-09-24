@@ -49,4 +49,8 @@ public class AnimeService {
         anime.setId(savedAnime.getId());
         animeRepository.save(anime);
     }
+
+    public List<Anime> listAllNoPageable() {
+        return animeRepository.findAll();
+    }
 }
