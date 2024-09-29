@@ -23,11 +23,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AnimeController {
     private final AnimeService animeService;
-    private final DateUtil dateUtil;
 
     @GetMapping
     public ResponseEntity<Page<Anime>> list(Pageable pageable) {
-        log.info(dateUtil.formatLocalDateTimeToDataBaseStyle(LocalDateTime.now()));
         return ResponseEntity.ok(animeService.listAll(pageable));
     }
     @GetMapping(path = "/all")
@@ -40,7 +38,7 @@ public class AnimeController {
         return ResponseEntity.ok(animeService.findByIdOrThrowBadRequestException(id));
     }
     @GetMapping(path = "/find")
-    public ResponseEntity<List<Anime>> findByIdName(@RequestParam String name) {
+    public ResponseEntity<List<Anime>> findByName(@RequestParam String name) {
         return ResponseEntity.ok(animeService.findByName(name));
     }
 
