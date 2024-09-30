@@ -4,6 +4,7 @@ import academy.devdojo.springbootessentials.domain.Anime;
 import academy.devdojo.springbootessentials.util.AnimeCreator;
 import lombok.extern.log4j.Log4j2;
 import org.assertj.core.api.Assertions;
+import org.hibernate.exception.ConstraintViolationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,15 +91,15 @@ class AnimeRepositoryTest {
     }
 
         /*
-        Este teste verifica se está lançando exception, quando se tenta salvar anime com nome vazio;
+        Este teste verifica se está lançando exception, quando se tenta salvar anime com nome vazio(Não está funcionando)!;
          */
     @Test
     @DisplayName("save thrown ConstraintViolationException when name is empty")
     void save_ThrowConstraintViolationException_WhenNameIsEmptyOrNull(){
         Anime anime = new Anime();
 //        anime.setName("");
-//        Assertions.assertThatThrownBy(() -> this.animeRepository.save(anime))
-//                .isInstanceOf(ConstraintViolationException.class);
+        Assertions.assertThatThrownBy(() -> this.animeRepository.save(anime))
+                .isInstanceOf(ConstraintViolationException.class);
 
 //        Assertions.assertThatExceptionOfType(ConstraintViolationException.class)
 //                .isThrownBy(() -> this.animeRepository.save(anime)).withMessageContaining("the anime name cannot be empty");
