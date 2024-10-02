@@ -26,8 +26,9 @@ public class AnimeController {
     public ResponseEntity<Page<Anime>> list(Pageable pageable) {
         return ResponseEntity.ok(animeService.listAll(pageable));
     }
+
     @GetMapping(path = "/all")
-    public ResponseEntity<List<Anime>> listAll(){
+    public ResponseEntity<List<Anime>> listAll() {
         return ResponseEntity.ok(animeService.listAllNoPageable());
     }
 
@@ -35,6 +36,7 @@ public class AnimeController {
     public ResponseEntity<Anime> findById(@PathVariable long id) {
         return ResponseEntity.ok(animeService.findByIdOrThrowBadRequestException(id));
     }
+
     @GetMapping(path = "/find")
     public ResponseEntity<List<Anime>> findByName(@RequestParam String name) {
         return ResponseEntity.ok(animeService.findByName(name));
@@ -47,17 +49,19 @@ public class AnimeController {
     }
 
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity<Void> delete(@PathVariable long id){
+    public ResponseEntity<Void> delete(@PathVariable long id) {
         animeService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
     @DeleteMapping
-    public ResponseEntity<Void> deleteAll(){
+    public ResponseEntity<Void> deleteAll() {
         animeService.deleteAll();
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
     @PutMapping
-    public ResponseEntity<Void> replace(@RequestBody AnimePutRequestBody animePutRequestBody){
+    public ResponseEntity<Void> replace(@RequestBody AnimePutRequestBody animePutRequestBody) {
         animeService.replace(animePutRequestBody);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

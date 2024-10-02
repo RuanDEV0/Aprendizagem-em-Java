@@ -7,6 +7,7 @@ import academy.devdojo.springbootessentials.repository.AnimeRepository;
 import academy.devdojo.springbootessentials.requests.AnimePostRequestBody;
 import academy.devdojo.springbootessentials.requests.AnimePutRequestBody;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -27,18 +28,21 @@ public class AnimeService {
         return animeRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException("Anime not found!"));
     }
-    public List<Anime> findByName(String name){
+
+    public List<Anime> findByName(String name) {
         return animeRepository.findByName(name);
     }
 
-    @Transactional()
+    @Transactional
     public Anime save(AnimePostRequestBody animePostRequestBody) {
         return animeRepository.save(AnimeMapper.INSTANCE.toAnime(animePostRequestBody));
     }
+
     public void delete(long id) {
         animeRepository.delete(findByIdOrThrowBadRequestException(id));
     }
-    public void deleteAll(){
+
+    public void deleteAll() {
         animeRepository.deleteAll();
     }
 
