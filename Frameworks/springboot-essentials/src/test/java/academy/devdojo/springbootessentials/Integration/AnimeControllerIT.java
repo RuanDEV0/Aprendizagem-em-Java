@@ -4,27 +4,26 @@ import academy.devdojo.springbootessentials.domain.Anime;
 import academy.devdojo.springbootessentials.repository.AnimeRepository;
 import academy.devdojo.springbootessentials.util.AnimeCreator;
 import academy.devdojo.springbootessentials.util.AnimePostRequestBodyCreator;
-import academy.devdojo.springbootessentials.util.AnimePutRequestBodyCreator;
 import academy.devdojo.springbootessentials.wrapper.PageableResponse;
 import lombok.extern.log4j.Log4j2;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
-import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.Collections;
 import java.util.List;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureTestDatabase
 @Log4j2
 public class AnimeControllerIT {
     @Autowired
@@ -108,48 +107,51 @@ public class AnimeControllerIT {
         List<Anime> animes = testRestTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<Anime>>() {
         }).getBody();
 
-        Assertions.assertThat(animes).hasSize(0).isEmpty();
+        Assertions.assertThat(animes).isNotNull().hasSize(0).isEmpty();
     }
 //*
-//    @Test
-//    @DisplayName("save returns animes when successul")
-//    void save_ReturnsAnimes_WhenSuccessul() {
+    @Test
+    @DisplayName("save returns animes when successul")
+    void save_ReturnsAnimes_WhenSuccessul() {
+
+        ResponseEntity<Anime> animeResponseEntity = testRestTemplate.postForEntity("/animes", AnimePostRequestBodyCreator.createAnimePostRequestBoy(), Anime.class);
+        Assertions.assertThat(animeResponseEntity).isNotNull();
+        Assertions.assertThat(animeResponseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        Assertions.assertThat(animeResponseEntity.getBody().getId()).isNotNull();
+        Anime anime = testRestTemplate.getForObject("/animes/{id}", Anime.class, animeResponseEntity.getBody().getId());
+        Assertions.assertThat(anime).isEqualTo(animeResponseEntity.getBody());
+    }
 //
-//        Anime bodyAnime = animeController.save(AnimePostRequestBodyCreator.createAnimePostRequestBoy()).getBody();
-//
-//        Assertions.assertThat(bodyAnime).isNotNull().isEqualTo(AnimeCreator.createValidAnime());
-//    }
-//
-//    @Test
-//    @DisplayName("replace updates animes when successul")
-//    void replace_UpdateAnime_WhenSuccessul() {
-//        Assertions.assertThatCode(() -> animeController.replace(AnimePutRequestBodyCreator.creatorAnimePutRequestBody()))
-//                .doesNotThrowAnyException();
-//
-//        ResponseEntity<Void> replace = animeController.replace(AnimePutRequestBodyCreator.creatorAnimePutRequestBody());
-//        Assertions.assertThat(replace).isNotNull();
-//        Assertions.assertThat(replace.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-//    }
-//
-//    @Test
-//    @DisplayName("delete removes animes when successul")
-//    void delete_RemovesAnime_WhenSuccessul() {
-//        Assertions.assertThatCode(() -> animeController.delete(10L))
-//                .doesNotThrowAnyException();
-//
-//        ResponseEntity<Void> replace = animeController.delete(10L);
-//        Assertions.assertThat(replace).isNotNull();
-//        Assertions.assertThat(replace.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-//    }
-//
-//    @Test
-//    @DisplayName("delete removes all animes when successul")
-//    void delete_RemovesAllAnime_WhenSuccessul() {
-//        Assertions.assertThatCode(() -> animeController.deleteAll())
-//                .doesNotThrowAnyException();
-//
-//        ResponseEntity<Void> replace = animeController.deleteAll();
-//        Assertions.assertThat(replace).isNotNull();
-//        Assertions.assertThat(replace.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-//    }
+    @Test
+    @DisplayName("replace updates animes when successul")
+    void replace_UpdateAnime_WhenSuccessul() {
+        Anime savedAnime = this.animeRepository.save(AnimeCreator.animeToBeSaved());
+        savedAnime.setName("Ruan Oliveira de ALmeida");
+        ResponseEntity<Void> exchange = testRestTemplate.exchange("/animes", HttpMethod.PUT
+                , new HttpEntity<>(savedAnime), Void.class);
+
+        Assertions.assertThat(exchange.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        Assertions.assertThat(exchange).isNotNull();
+    }
+
+    @Test
+    @DisplayName("delete removes animes when successul")
+    void delete_RemovesAnime_WhenSuccessul() {
+        Anime savedAnime = this.animeRepository.save(AnimeCreator.animeToBeSaved());
+        log.info(animeRepository.findAll());
+        ResponseEntity<Void> replace = testRestTemplate.exchange("/animes/{id}", HttpMethod.DELETE,
+                null, Void.class,savedAnime.getId());
+        Assertions.assertThat(replace).isNotNull();
+        Assertions.assertThat(replace.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        log.info(animeRepository.findAll());
+    }
+
+    @Test
+    @DisplayName("delete removes all animes when successul")
+    void delete_RemovesAllAnime_WhenSuccessul() {
+        ResponseEntity<Void> replace = testRestTemplate.exchange("/animes",HttpMethod.DELETE,null,Void.class);
+        Assertions.assertThat(replace).isNotNull();
+        Assertions.assertThat(replace.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        log.info(this.animeRepository.findAll());
+    }
 }
