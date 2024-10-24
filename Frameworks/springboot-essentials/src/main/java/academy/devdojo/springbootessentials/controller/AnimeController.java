@@ -1,4 +1,4 @@
-package academy.devdojo.springbootessentials.controller;
+    package academy.devdojo.springbootessentials.controller;
 
 import academy.devdojo.springbootessentials.domain.Anime;
 import academy.devdojo.springbootessentials.requests.AnimePostRequestBody;
