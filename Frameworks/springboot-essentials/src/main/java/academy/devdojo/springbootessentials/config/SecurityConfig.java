@@ -25,7 +25,7 @@ public class SecurityConfig {
 		http
 //				.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()) --> habilitar em ambiente de produção
 				.csrf().disable()  // Caso você não esteja usando CSRF
-				.authorizeHttpRequests(requests -> requests.anyRequest().authenticated())
+				.authorizeHttpRequests(requests -> requests.anyRequest().authenticated()).formLogin(httpSecurityFormLoginConfigurer -> {})
 				.httpBasic(httpSecurityHttpBasicConfigurer -> {}); // Habilita o login com formulário, se necessário
 		return http.build();
 	}
